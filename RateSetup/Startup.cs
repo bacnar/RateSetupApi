@@ -5,7 +5,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using RateSetup.Helpers;
 using RateSetup.Models;
+using RateSetup.Services.UserService;
 
 namespace RateSetup
 {
@@ -22,6 +24,8 @@ namespace RateSetup
         public void ConfigureServices(IServiceCollection services)
         {
             string dbConnectionString = Configuration.GetConnectionString("DevDatabase");
+            var section = Configuration.GetSection("JwtSettings");
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
 
             services.AddDbContext<EFContext>(opt => opt.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString)));
             services.AddControllers();
@@ -29,6 +33,8 @@ namespace RateSetup
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RateSetup", Version = "v1" });
             });
+
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +51,9 @@ namespace RateSetup
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

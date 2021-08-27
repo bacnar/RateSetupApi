@@ -10,48 +10,48 @@ namespace RateSetup.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SetupsController : ControllerBase
+    public class HashtagsController : ControllerBase
     {
         private readonly EFContext _context;
 
-        public SetupsController(EFContext context)
+        public HashtagsController(EFContext context)
         {
             _context = context;
         }
 
-        // GET: api/Setups
+        // GET: api/Hashtags
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Setup>>> GetSetup()
+        public async Task<ActionResult<IEnumerable<Hashtag>>> GetHashtag()
         {
-            return await _context.Setup.ToListAsync();
+            return await _context.Hashtag.ToListAsync();
         }
 
-        // GET: api/Setups/5
+        // GET: api/Hashtags/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Setup>> GetSetup(long id)
+        public async Task<ActionResult<Hashtag>> GetHashtag(long id)
         {
-            var setup = await _context.Setup.FindAsync(id);
+            var hashtag = await _context.Hashtag.FindAsync(id);
 
-            if (setup == null)
+            if (hashtag == null)
             {
                 return NotFound();
             }
 
-            return setup;
+            return hashtag;
         }
 
-        // PUT: api/Setups/5
+        // PUT: api/Hashtags/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSetup(long id, Setup setup)
+        public async Task<IActionResult> PutHashtag(long id, Hashtag hashtag)
         {
-            if (id != setup.Id)
+            if (id != hashtag.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(setup).State = EntityState.Modified;
+            _context.Entry(hashtag).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace RateSetup.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SetupExists(id))
+                if (!HashtagExists(id))
                 {
                     return NotFound();
                 }
@@ -72,38 +72,38 @@ namespace RateSetup.Controllers
             return NoContent();
         }
 
-        // POST: api/Setups
+        // POST: api/Hashtags
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Setup>> PostSetup(Setup setup)
+        public async Task<ActionResult<Hashtag>> PostHashtag(Hashtag hashtag)
         {
-            _context.Setup.Add(setup);
+            _context.Hashtag.Add(hashtag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetSetup", new { id = setup.Id }, setup);
+            return CreatedAtAction("GetHashtag", new { id = hashtag.Id }, hashtag);
         }
 
-        // DELETE: api/Setups/5
+        // DELETE: api/Hashtags/5
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSetup(long id)
+        public async Task<IActionResult> DeleteHashtag(long id)
         {
-            var setup = await _context.Setup.FindAsync(id);
-            if (setup == null)
+            var hashtag = await _context.Hashtag.FindAsync(id);
+            if (hashtag == null)
             {
                 return NotFound();
             }
 
-            _context.Setup.Remove(setup);
+            _context.Hashtag.Remove(hashtag);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool SetupExists(long id)
+        private bool HashtagExists(long id)
         {
-            return _context.Setup.Any(e => e.Id == id);
+            return _context.Hashtag.Any(e => e.Id == id);
         }
     }
 }

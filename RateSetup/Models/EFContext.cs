@@ -13,5 +13,6 @@ namespace RateSetup.Models
         public DbSet<User> User { get; set; }
         public DbSet<Setup> Setup { get; set; }
         public DbSet<SetupContent> SetupContent { get; set; }
+        public DbSet<Hashtag> Hashtag { get; set; }
     }
 }

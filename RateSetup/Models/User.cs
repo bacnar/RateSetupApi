@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RateSetup.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,5 +28,8 @@ namespace RateSetup.Models
 
         [Required]
         public string ProfileImage { get; set; }
+
+        [Required]
+        public UserType UserType { get; set; }
     }
 }

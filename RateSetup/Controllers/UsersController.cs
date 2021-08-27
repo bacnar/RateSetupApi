@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RateSetup.Helpers;
 using RateSetup.Models;
+using RateSetup.Models.Authentication;
+using RateSetup.Services.UserService;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RateSetup.Controllers
 {
@@ -13,25 +13,25 @@ namespace RateSetup.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly EFContext _context;
+        private readonly IUserService _userService;
 
-        public UsersController(EFContext context)
+        public UsersController(EFContext context, IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         // GET: api/Users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            return await _userService.GetAll();
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(long id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _userService.GetById(id);
 
             if (user == null)
             {
@@ -43,6 +43,7 @@ namespace RateSetup.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(long id, User user)
         {
@@ -51,15 +52,13 @@ namespace RateSetup.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _userService.Update(user);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!await _userService.Exists(id))
                 {
                     return NotFound();
                 }
@@ -74,51 +73,42 @@ namespace RateSetup.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
+            await _userService.Add(user);
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
         // DELETE: api/Users/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(long id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = await _userService.GetById(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+            await _userService.Delete(user);
 
             return NoContent();
         }
 
-        // POST: api/Login
-        /*[Route("api/Login")]
-        [HttpPost()]
-        public async Task<IActionResult> LoginUser()
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
+            var response = await _userService.AuthenticateAsync(model);
+
+            if (response == null)
             {
-                return NotFound();
+                return BadRequest(new { message = "Username or password is incorrect" });
             }
 
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }*/
-
-        private bool UserExists(long id)
-        {
-            return _context.User.Any(e => e.Id == id);
+            return Ok(response);
         }
     }
 }
