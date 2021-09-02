@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RateSetup.Helpers.ConfigurationDTOs;
 using RateSetup.Services.UserService;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,12 +27,14 @@ namespace RateSetup.Helpers
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                attachUserToContext(context, userService, token);
+            {
+                await AttachUserToContextAsync(context, userService, token);
+            }
 
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, IUserService userService, string token)
+        private async Task AttachUserToContextAsync(HttpContext context, IUserService userService, string token)
         {
             try
             {
@@ -51,7 +54,7 @@ namespace RateSetup.Helpers
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
                 // attach user to context on successful jwt validation
-                context.Items["User"] = userService.GetById(userId);
+                context.Items["User"] = await userService.GetById(userId);
             }
             catch
             {

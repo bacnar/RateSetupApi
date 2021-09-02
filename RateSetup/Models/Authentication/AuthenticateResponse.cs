@@ -1,4 +1,5 @@
 ﻿using RateSetup.Enums;
+using RateSetup.Models.Database;
 
 namespace RateSetup.Models.Authentication
 {

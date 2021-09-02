@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RateSetup.Models
+namespace RateSetup.Models.Database
 {
     public class Setup
     {

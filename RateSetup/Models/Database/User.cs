@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RateSetup.Models
+namespace RateSetup.Models.Database
 {
     public class User
     {
@@ -20,16 +20,14 @@ namespace RateSetup.Models
         [Required]
         public string Password { get; set; }
 
-        [Required]
         public int Activated { get; set; }
 
-        [Required]
         public DateTime DateRegistered { get; set; }
 
-        [Required]
         public string ProfileImage { get; set; }
 
-        [Required]
         public UserType UserType { get; set; }
+
+        public string ActivateKey { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RateSetup.Helpers;
-using RateSetup.Models;
+using RateSetup.Models.Database;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

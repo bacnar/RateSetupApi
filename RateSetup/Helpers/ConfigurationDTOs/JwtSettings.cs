@@ -1,4 +1,4 @@
-﻿namespace RateSetup.Helpers
+﻿namespace RateSetup.Helpers.ConfigurationDTOs
 {
     public class JwtSettings
     {

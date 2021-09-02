@@ -1,5 +1,6 @@
-﻿using RateSetup.Models;
-using RateSetup.Models.Authentication;
+﻿using RateSetup.Models.Authentication;
+using RateSetup.Models.Database;
+using RateSetup.Models.UserServiceModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,5 +21,7 @@ namespace RateSetup.Services.UserService
         public Task Delete(User user);
 
         Task<bool> Exists(long id);
+
+        Task<int> Register(RegisterUserRequest user);
     }
 }

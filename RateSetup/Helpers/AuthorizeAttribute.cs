@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using RateSetup.Models;
+using RateSetup.Models.Database;
 using System;
 
 namespace RateSetup.Helpers

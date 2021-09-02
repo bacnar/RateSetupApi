@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RateSetup.Helpers;
-using RateSetup.Models;
 using RateSetup.Models.Authentication;
+using RateSetup.Models.Database;
+using RateSetup.Models.UserServiceModels;
 using RateSetup.Services.UserService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -71,15 +72,14 @@ namespace RateSetup.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Users/registration
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Authorize]
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        [HttpPost("registration")]
+        public async Task<ActionResult<User>> PostUser(RegisterUserRequest user)
         {
-            await _userService.Add(user);
+            var id = await _userService.Register(user);
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new { id = id }, user);
         }
 
         // DELETE: api/Users/5

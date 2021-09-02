@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RateSetup.Helpers;
-using RateSetup.Models;
+using RateSetup.Helpers.ConfigurationDTOs;
 using RateSetup.Models.Authentication;
+using RateSetup.Models.Database;
+using RateSetup.Models.UserServiceModels;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -71,6 +74,21 @@ namespace RateSetup.Services.UserService
         public Task<bool> Exists(long id)
         {
             return _context.User.AnyAsync(e => e.Id == id);
+        }
+
+        public Task<int> Register(RegisterUserRequest user)
+        {
+            var dbUser = new User
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Password = PasswordHasher.Hash(user.Password),
+                ProfileImage = user.ProfileImage
+            };
+
+            _context.User.Add(dbUser);
+
+            return _context.SaveChangesAsync();
         }
 
         private string GenerateJwtToken(User user)
